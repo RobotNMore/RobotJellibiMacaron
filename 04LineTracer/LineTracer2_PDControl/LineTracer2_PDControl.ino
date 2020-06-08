@@ -1,5 +1,3 @@
-#include <Servo.h> 
-
 #define ENABLE_MOVE   1
 #define ENABLE_LED    1
 

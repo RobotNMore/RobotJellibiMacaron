@@ -56,6 +56,7 @@ void setup() {
   pinMode(10, OUTPUT); // LED
   pinMode(11, OUTPUT);
   Serial.begin(9600);
+  //오른쪽 버튼 누르면 
   while (!(digitalRead(4) == 0))
   {
     _loop();

@@ -1,5 +1,5 @@
 
-
+//JellibiButton Library 추가
 #include <JellibiButton.h>
 JellibiButton _btnUP;
 JellibiButton _btnDown;
@@ -14,6 +14,9 @@ bool _bDebug = false;
 void MoveJellibi();
 void StopJellibi();
 
+/**
+ * Pin Number
+ */
 #define PIN_BUTTON_UP A0
 #define PIN_BUTTON_DOWN A1
 #define PIN_BUTTON_LEFT 2
@@ -26,15 +29,18 @@ void StopJellibi();
 #define PIN_PWM_RIGHT 6
 #define PIN_LED_RED 10
 
+//IRSensor Threshold
 #define IR_TH 900
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  
   _btnUP.Init(PIN_BUTTON_UP, false);
   _btnDown.Init(PIN_BUTTON_DOWN, false);
   _btnRight.Init(PIN_BUTTON_RIGHT, false);
   _btnLeft.Init(PIN_BUTTON_LEFT, false);
+  
   pinMode(PIN_IR_LEFT, INPUT);
   pinMode(PIN_IR_RIGHT, INPUT);  
   pinMode(PIN_DIR_LEFT, OUTPUT);
@@ -46,11 +52,14 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  
+  // 위 버튼을 눌러 라인트레이스를 시작한다.
   if (_btnUP.Check() && !_bRun) {
     _bRun = true;
     _centerValue = analogRead(PIN_IR_RIGHT) - analogRead(PIN_IR_LEFT);
   }
-
+  
+  // 다른 버튼을 누를경우 라인트레이스를 중지한다.
   if (_btnDown.Check()&& _bRun) {
     _bRun = false;
   }
@@ -65,9 +74,9 @@ void loop() {
   }
   
   if (_bRun) {
-    MoveJellibi(); 
+    MoveJellibi(); //LineTrace
   } else {
-    StopJellibi();
+    StopJellibi(); //Stop
   } 
 }
 void StopJellibi()
@@ -77,19 +86,27 @@ void StopJellibi()
 }
 void MoveJellibi()
 {
+  /**
+   * LineTrace 하기 전에 Cross를 만났는지 체크하여
+   * 만났을 경우 LineTrace를 중지한다.
+   */
   if(analogRead(PIN_IR_RIGHT)>IR_TH && analogRead(PIN_IR_LEFT)>IR_TH){
     _bRun = false;
     return;
-  } //cross 만나면 멈춤.
-  
+  } 
+
+  /**
+   * LineTrace
+   */
+  // trunSpeed의 나누기 상수(6)를 조절하여 회전 각도를 조절할 수 있다.  
   double turnSpeed = ((analogRead(PIN_IR_RIGHT)-analogRead(PIN_IR_LEFT)) - _centerValue )/6;
   double leftSpeed = _speed + turnSpeed;
   double rightSpeed = _speed - turnSpeed;
 
   if (leftSpeed > 0) {
-    digitalWrite(PIN_DIR_LEFT, 0);
+    digitalWrite(PIN_DIR_LEFT, 0); 
   } else {
-    digitalWrite(PIN_DIR_LEFT, 1);
+    digitalWrite(PIN_DIR_LEFT, 1); 
   }
   if (rightSpeed > 0 ) {
     digitalWrite(PIN_DIR_LEFT, 1);

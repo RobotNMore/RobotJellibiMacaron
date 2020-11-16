@@ -104,14 +104,14 @@ void MoveJellibi()
   double rightSpeed = _speed - turnSpeed;
 
   if (leftSpeed > 0) {
-    digitalWrite(PIN_DIR_LEFT, 0); 
-  } else {
     digitalWrite(PIN_DIR_LEFT, 1); 
+  } else {
+    digitalWrite(PIN_DIR_LEFT, 0); 
   }
   if (rightSpeed > 0 ) {
-    digitalWrite(PIN_DIR_LEFT, 1);
-  } else {
     digitalWrite(PIN_DIR_RIGHT, 0);
+  } else {
+    digitalWrite(PIN_DIR_RIGHT, 1);
   }
   analogWrite( PIN_PWM_LEFT, round(abs(leftSpeed)));
   analogWrite( PIN_PWM_RIGHT, round(abs(rightSpeed)));
